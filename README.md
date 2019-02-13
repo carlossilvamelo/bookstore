@@ -3,19 +3,18 @@
 
 # features done
 
-Authentication
+# Authentication
 - generate token by user name
 - token verification
 
 # User
-==
+
 - login
 - signup
 - list all (filter by name)
 - create
 - delete
 
-==================
 # Book
 
 - create
@@ -25,7 +24,7 @@ Authentication
 - find by id
 
 
-=========
+
 # Order
 
 - create new order
