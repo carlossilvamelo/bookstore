@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import com.api.bookstore.controllers.UserResource;
 import com.api.bookstore.services.JwtManager;
 
-//@Component
+@Component
 public class RequestFilter implements Filter {
 
 	static final Logger LOG = Logger.getLogger(UserResource.class.getName());
@@ -39,9 +39,12 @@ public class RequestFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		System.out.println(req.getRequestURI());
-		if (req.getRequestURI().equals("/h2"))
+		if (req.getRequestURI().contains("h2") 
+				| req.getRequestURI().contains("swagger")
+				| req.getRequestURI().contains("api-docs"))
 			chain.doFilter(request, response);
-		else if (req.getRequestURI().equals(LOGIN_URI))
+		else 
+			if (req.getRequestURI().equals(LOGIN_URI))
 			chain.doFilter(request, response);
 		else {
 			String token = req.getHeader(AUTH_HEADER);
