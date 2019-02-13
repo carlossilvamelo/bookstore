@@ -1,13 +1,13 @@
 ## bookstore
 
 
-# features done
+## features done
 
-# Authentication
+### Authentication
 - generate token by user name
 - token verification
 
-# User
+### User
 
 - login
 - signup
@@ -15,7 +15,7 @@
 - create
 - delete
 
-# Book
+### Book
 
 - create
 - get all (filter by author name, words in title, category
@@ -25,7 +25,7 @@
 
 
 
-# Order
+### Order
 
 - create new order
 - close order (devolution)
