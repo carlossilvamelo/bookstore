@@ -20,6 +20,9 @@ public class OrderService implements ICrudService<BookOrder, Long>{
 	@Autowired
 	private BookOrderRepository orderRepository;
 	
+	@Autowired
+	private UserService userService;
+	
 	@Override
 	public List<BookOrder> getAll() {
 		// TODO Auto-generated method stub
@@ -71,6 +74,12 @@ public class OrderService implements ICrudService<BookOrder, Long>{
 		
 		return order;
 	}
+	
+	public BookOrder getByUserId(Long userId) {
+		User user = userService.getById(userId);
+		return user != null ? orderRepository.findOneByUser(user): null;
+	}
+	
 
 	
 	

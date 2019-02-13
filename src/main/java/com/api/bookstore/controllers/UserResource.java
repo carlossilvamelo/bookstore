@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.bookstore.dto.LoginDto;
 import com.api.bookstore.dto.UserDto;
 import com.api.bookstore.models.Address;
+import com.api.bookstore.models.BookOrder;
 import com.api.bookstore.models.Credential;
 import com.api.bookstore.models.User;
 import com.api.bookstore.services.CredentialService;
 import com.api.bookstore.services.JwtManager;
+import com.api.bookstore.services.OrderService;
 import com.api.bookstore.services.UserService;
 
 import io.swagger.annotations.Api;
@@ -40,6 +43,9 @@ public class UserResource {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private OrderService orderService;
+	
 	@Autowired
 	private CredentialService credentialService;
 
@@ -113,6 +119,27 @@ public class UserResource {
 		User user = userService.getById(id);
 
 		return user != null ? ResponseEntity.ok().body(user) : ResponseEntity.notFound().build();
+	}
+	
+	@DeleteMapping("{userId}")
+	public ResponseEntity<User> delete(@PathVariable Long userId){
+		// User user = userService.getById(id);
+		BookOrder bookOrder = orderService.getByUserId(userId);
+		if(bookOrder != null) {
+			orderService.remove(bookOrder);
+			return ResponseEntity.noContent().build();
+		}else {
+			User user = userService.getById(userId);
+			if(user != null) {
+				userService.remove(user);
+				return ResponseEntity.noContent().build();
+			}else
+			 return ResponseEntity.notFound().build();
+			
+		}
+		
+		
+		
 	}
 
 }
