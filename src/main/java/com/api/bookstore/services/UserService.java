@@ -49,5 +49,13 @@ public class UserService implements ICrudService<User, Long> {
 		c.setId(new Long(1));
 		return userRepository.findOneByCredential(c);
 	}
+	
+	public User getBySocialId(String socialId) {
+		return userRepository.findOneBySocialId(socialId);
+	}
+	
+	public List<User> filterByName(String name) {
+		return userRepository.findOneByNameContainingIgnoreCase(name);
+	}
 
 }

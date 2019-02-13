@@ -14,6 +14,18 @@ public class BookDto  implements Serializable{
 	private String title;
 	private String resume;
 	private String author;
+	private boolean free;
+	
+	public boolean isFree() {
+		return free;
+	}
+
+
+	public void setFree(boolean free) {
+		this.free = free;
+	}
+
+
 	public String getTitle() {
 		return title;
 	}
@@ -66,6 +78,6 @@ public class BookDto  implements Serializable{
 	}
 	
 	public static Book fromDto(BookDto bookDto) {
-		return new Book(bookDto.getTitle(), bookDto.getResume(), bookDto.getAuthor(),null, bookDto.getCategory());
+		return new Book(bookDto.getTitle(), bookDto.getResume(), bookDto.getAuthor(),bookDto.isFree(), null, bookDto.getCategory());
 	}
 }

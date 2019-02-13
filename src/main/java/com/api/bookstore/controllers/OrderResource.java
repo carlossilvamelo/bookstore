@@ -1,12 +1,10 @@
 package com.api.bookstore.controllers;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.persistence.criteria.Order;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,6 @@ import com.api.bookstore.models.Book;
 import com.api.bookstore.models.BookOrder;
 import com.api.bookstore.models.User;
 import com.api.bookstore.services.BookService;
-import com.api.bookstore.services.JwtManager;
 import com.api.bookstore.services.OrderService;
 import com.api.bookstore.services.UserService;
 
@@ -48,25 +45,36 @@ public class OrderResource {
 	}
 	
 	@GetMapping("/user/{userId}/book/{bookId}")
-	public ResponseEntity<BookOrder> orderBook(@PathVariable Long userId,@PathVariable Long bookId, HttpServletRequest request){
+	public ResponseEntity<BookOrder> orderBook(@PathVariable Long userId,
+			@PathVariable Long bookId){
 		
-		String token = request.getHeader(AUTH_HEADER);
-		String userName = JwtManager.getIdByJwt(token);
+		// creating new Order
 		Calendar currentDate = new GregorianCalendar();
 		Calendar dueDate = new GregorianCalendar(currentDate.getTime().getYear(), 
 				currentDate.getTime().getMonth()+1, currentDate.getTime().getDay());
-
 		User user = userService.getById(userId);
 		BookOrder order = new BookOrder(user, currentDate, dueDate, null);
-		
 		Book book = bookService.getById(bookId);
-		order = orderService.orderBookToUser(user, book, order);
 		
-		orderService.create(order);
+		if(book.isFree()) {
+			order = orderService.orderBookToUser(user, book, order);
+			orderService.create(order);
+			return ResponseEntity.ok().body(order);
+		}else
+			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok().body(order);
-		//return orderService.getAll();
+		
 	}
+	
+	@GetMapping("/{orderId}/close")
+	public ResponseEntity<BookOrder> devolution(@PathVariable Long orderId){
+		BookOrder order = orderService.getById(orderId);
+		
+		orderService.remove(order);
+		return ResponseEntity.ok().build();
+	}
+	
+	
 	
 	
 }

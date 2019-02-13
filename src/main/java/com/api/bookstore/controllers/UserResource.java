@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.bookstore.dto.LoginDto;
@@ -30,90 +31,88 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 @Api(value = "Greeting", description = "Greeting people")
 public class UserResource {
-	
+
 	static final String TOKEN_ISSUER = "issue";
-    static final String TOKEN_PARAMETER = "token";
-    static final String TOKEN_SUBJECT = "sub";
-    static final int TIMEOUT = 1440*60*1000;//24 Hours
-    
+	static final String TOKEN_PARAMETER = "token";
+	static final String TOKEN_SUBJECT = "sub";
+	static final int TIMEOUT = 1440 * 60 * 1000;// 24 Hours
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private CredentialService credentialService;
-	
+
 	@ApiOperation(value = "api")
 	@PostMapping("/login")
-	public ResponseEntity<UserDto> login(@RequestBody LoginDto login){
-		//Credential credential = credentialService.getById(id)
-		User user = credentialService.verifyUser(login.getUserName(),login.getPassword());
+	public ResponseEntity<UserDto> login(@RequestBody LoginDto login) {
+		// Credential credential = credentialService.getById(id)
+		User user = credentialService.verifyUser(login.getUserName(), login.getPassword());
 		UserDto userDto = null;
-		if(user != null) {
-			
+		if (user != null) {
+
 			userDto = new UserDto(user);
-			userDto.setToken(JwtManager.createJWT(user.getCredential().getUserName(), 
-					"issue", 
-					TOKEN_SUBJECT, 
-					TIMEOUT));
+			userDto.setToken(JwtManager.createJWT(user.getCredential().getUserName(), "issue", TOKEN_SUBJECT, TIMEOUT));
 		}
-		return user != null ? ResponseEntity.ok().body(userDto):
-			ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		return user != null ? ResponseEntity.ok().body(userDto)
+				: ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
-	
+
 	@PostMapping("")
 	public ResponseEntity<User> create(@Valid @RequestBody User user) {
 		userService.create(user);
-		
+
 		return ResponseEntity.noContent().build();
 	}
+
 	@PostMapping("{userId}")
-	public ResponseEntity<User> signup(@PathVariable Long userId,@Valid @RequestBody Credential credential) {
-	
+	public ResponseEntity<User> signup(@PathVariable Long userId, @Valid @RequestBody Credential credential) {
+
 		User user = userService.getById(userId);
-		if(user != null && credential != null) {
-			if(user.getCredential()!= null) {
+		if (user != null && credential != null) {
+			if (user.getCredential() != null) {
 				user.getCredential().setUserName(credential.getUserName());
 				user.getCredential().setPassword(credential.getPassword());
 				userService.update(user);
 				return ResponseEntity.ok(user);
-			}else {
+			} else {
 				user.setCredential(credential);
 				userService.create(user);
 				return ResponseEntity.ok(user);
 			}
-			
+
 		}
-		
+
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping("obj")
-	public ResponseEntity<User> getObj(){
+	public ResponseEntity<User> getObj() {
 		Credential credential = new Credential("admin", "admin");
 		User user = new User(credential, "Admin admin", "09006369470", "admin@admin.com",
 				new Address("consectetur adipiscing elit", "sed semper urna hendrerit quis", 3000, 52110000,
 						"suscipit sed venenatis est"));
-		
+
 		return ResponseEntity.ok().body(user);
 	}
-	
+
 	@GetMapping("")
-	public ResponseEntity<List<User>> getAll(){
+	public ResponseEntity<List<User>> getAll(@RequestParam(defaultValue="name")String name) {
+		List<User> userList = null;
+		if (!name.equals("name"))
+			userList = userService.filterByName(name);
+		else
+			userList = userService.getAll();
+
 		
-		List<User> userList = userService.getAll();
-		userList.forEach(x ->System.out.println(x.getName()));
-		System.out.println(userList.size());
 		return ResponseEntity.ok().body(userList);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<User> getById(@PathVariable Long id){
+	public ResponseEntity<User> getById(@PathVariable Long id) {
 		User user = userService.getById(id);
-		
-		
-		return user != null? ResponseEntity.ok().body(user): ResponseEntity.notFound().build();
+
+		return user != null ? ResponseEntity.ok().body(user) : ResponseEntity.notFound().build();
 	}
-	
-	
-	
+
 }

@@ -27,6 +27,7 @@ public class Book{
 	private String title;
 	private String resume;
 	private String author;
+	private boolean free;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="order_id")
@@ -40,13 +41,14 @@ public class Book{
 	
 	public Book() {};
 
-	public Book(String title, String resume, String author, BookOrder order, Category category) {
+	public Book(String title, String resume, String author,boolean free, BookOrder order, Category category) {
 		super();
 		this.title = title;
 		this.resume = resume;
 		this.author = author;
 		this.bookOrder = order;
 		this.category = category;
+		this.free = free;
 	}
 
 	public Long getId() {
@@ -93,6 +95,14 @@ public class Book{
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public boolean isFree() {
+		return free;
+	}
+
+	public void setFree(boolean free) {
+		this.free = free;
 	}
 
 	
