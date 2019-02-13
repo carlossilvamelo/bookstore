@@ -1,5 +1,6 @@
 ## bookstore
 
+swagger URI: "/swagger-ui.html"
 
 ## features done
 
