@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.api.bookstore.exceptions.ObjectNotFoundException;
 import com.api.bookstore.models.Credential;
 import com.api.bookstore.models.User;
 import com.api.bookstore.repository.CredentialRepository;
@@ -14,25 +15,7 @@ public class CredentialService implements ICrudService<Credential, Long>{
 
 	@Autowired
 	private CredentialRepository credentialRepository;
-
-	@Autowired
-	private UserService userService;
 	
-	public User verifyUser(String userName, String password) {
-		Credential credential = credentialRepository.findByUserName(userName);
-		
-		User user = null;
-		if (credential != null) {
-			//user = credential.getUser();
-			if (credential.getPassword().equals(password)) {
-				
-				user = userService.getByCredentialId(credential.getId());
-			}
-				
-		}
-		
-		return user;
-	}
 
 	@Override
 	public List<Credential> getAll() {
@@ -43,7 +26,7 @@ public class CredentialService implements ICrudService<Credential, Long>{
 	@Override
 	public Credential getById(Long id) {
 		// TODO Auto-generated method stub
-		return credentialRepository.findOne(id);
+		return credentialRepository.findById(id).get();
 	}
 
 	@Override

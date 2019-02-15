@@ -3,11 +3,8 @@ package com.api.bookstore.config;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
-
 import com.api.bookstore.enums.Category;
 import com.api.bookstore.models.Address;
 import com.api.bookstore.models.Book;
@@ -17,7 +14,7 @@ import com.api.bookstore.models.User;
 import com.api.bookstore.repository.BookOrderRepository;
 
 
-@Configuration
+//@Configuration
 public class InitializationOrders implements CommandLineRunner {
 
 	
@@ -32,7 +29,7 @@ public class InitializationOrders implements CommandLineRunner {
 						"suscipit sed venenatis est"));
 		
 		List<Book> bookList = generateBooks();
-		
+
 		BookOrder order = new BookOrder(user,
 				new GregorianCalendar(2019,06,21,15,00),
 				new GregorianCalendar(2019,07,21,15,00),

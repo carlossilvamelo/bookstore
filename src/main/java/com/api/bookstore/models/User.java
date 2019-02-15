@@ -4,28 +4,29 @@ package com.api.bookstore.models;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="USER")
 public class User {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="user_id")
 	private Long id;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     private Credential credential;
-	
+	@Column(name = "name")
 	private String name;
+	@Column(name = "social_id")
 	private String socialId;
+	@Column(name = "email")
 	private String email;
 	@OneToOne(cascade = CascadeType.ALL)
 	private Address address;

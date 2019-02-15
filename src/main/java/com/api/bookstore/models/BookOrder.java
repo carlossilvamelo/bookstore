@@ -1,10 +1,8 @@
 package com.api.bookstore.models;
 
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
+import java.util.Calendar;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,19 +11,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="BOOK_ORDER")
 public class BookOrder{
 	
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="order_id")
     private Long id;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private User user;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -33,23 +33,21 @@ public class BookOrder{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar dueDate;
 	
-	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.PERSIST)
 	private List<Book> book;
 	
 	
-	public BookOrder(User user, Calendar date, Calendar date2, List<Book> book) {
+	public BookOrder(User user, Calendar orderDate, Calendar dueDate, List<Book> book) {
 		super();
 		this.user = user;
-		this.orderDate = date;
-		this.dueDate = date2;
+		this.orderDate = orderDate;
+		this.dueDate = dueDate;
 		this.book = book;
 	}
 
 	public BookOrder() {}
 	
 	
-	
-
 	public Long getId() {
 		return id;
 	}
