@@ -29,4 +29,6 @@ swagger URI: "/swagger-ui.html"
 ### Order
 
 - create new order
+- delete order
 - close order (devolution)
+- get order by user
