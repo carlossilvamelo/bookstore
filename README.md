@@ -7,7 +7,7 @@ swagger URI: "/swagger-ui.html"
 ### Authentication
 - basic auth
 
-User: admin
+User: admin,
 password: admin
 
 ### User
