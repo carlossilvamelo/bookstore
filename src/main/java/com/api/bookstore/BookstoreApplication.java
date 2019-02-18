@@ -3,6 +3,7 @@ package com.api.bookstore;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -14,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class BookstoreApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(BookstoreApplication.class, args);
 	}
 	

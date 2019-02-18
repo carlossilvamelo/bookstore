@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -127,7 +128,8 @@ public class UserService implements ICrudService<User, Long> {
 		if (user != null && credential != null) {
 			if (user.getCredential() != null) {
 				user.getCredential().setUserName(credential.getUserName());
-				user.getCredential().setPassword(credential.getPassword());
+				user.getCredential()
+				.setPassword(new BCryptPasswordEncoder().encode(credential.getPassword()));
 				user = this.update(user);
 				return user;
 			} else {
@@ -138,24 +140,6 @@ public class UserService implements ICrudService<User, Long> {
 		}
 
 		return user;
-	}
-
-	/**
-	 * 
-	 * @param login
-	 * @return
-	 */
-	public UserDto login(LoginDto login) {
-
-		User user = userRepository.findUserByCredentials(login.getUserName(), login.getPassword());
-		if (user == null)
-			throw new ObjectNotFoundException("The credential is not valid");
-		
-		UserDto userDto = new UserDto(user);
-		userDto.setToken(JwtManager.createJWT(user.getCredential().getUserName()
-				,"issue", JwtManager.TOKEN_SUBJECT,JwtManager.TIMEOUT));
-		
-		return userDto;
 	}
 
 }

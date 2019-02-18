@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +28,12 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/user")
-@Api(value = "Greeting", description = "Greeting people")
+@Api(value = "LibraryAPI", description = "Library API")
 public class UserResource {
 
 	@Autowired
 	private UserService userService;
 
-
-	@ApiOperation(value = "api")
-	@PostMapping("/login")
-	public UserDto login(@RequestBody LoginDto login) {
-		return userService.login(login);
-	}
 
 	@PostMapping("")
 	public User create(@Valid @RequestBody User user) {
@@ -60,11 +55,13 @@ public class UserResource {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public User getById(@PathVariable Long id) {
 		return userService.getById(id);
 	}
 
 	@DeleteMapping("{userId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public User delete(@PathVariable Long userId) {
 		return userService.removeById(userId);
 	}

@@ -1,15 +1,11 @@
 package com.api.bookstore.models;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="CREDENTIAL")
@@ -25,6 +21,9 @@ public class Credential {
 
     @Column(name = "user_name")
     private String userName;
+    
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
 
 
     public Credential() {
@@ -32,10 +31,11 @@ public class Credential {
 
     
     
-    public Credential(String password, String userName) {
+    public Credential(String password, String userName, boolean isAdmin) {
 		super();
 		this.password = password;
 		this.userName = userName;
+		this.isAdmin = isAdmin;
 	}
 
 
@@ -63,7 +63,13 @@ public class Credential {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
 
+	public Boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 
 }
