@@ -1,22 +1,12 @@
 package com.api.bookstore.services;
 
 import java.util.List;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import com.api.bookstore.controllers.OrderResource;
-import com.api.bookstore.dto.LoginDto;
-import com.api.bookstore.dto.UserDto;
 import com.api.bookstore.exceptions.ObjectNotFoundException;
 import com.api.bookstore.models.BookOrder;
 import com.api.bookstore.models.Credential;
@@ -33,8 +23,9 @@ public class UserService implements ICrudService<User, Long> {
 	private OrderService orderService;
 
 	@Override
-	public List<User> getAll(Pageable page) {
-		return userRepository.findAll(PageRequest.of(0, 2)).getContent();
+	public Page<User> getAll(String pageNumber, String pageSize) {
+		Pageable page = PageRequest.of(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+		return userRepository.findAll(page);
 	}
 
 	@Override
@@ -50,74 +41,61 @@ public class UserService implements ICrudService<User, Long> {
 	}
 
 	@Override
-	public void remove(User entity) {
+	public User remove(User entity) {
 		userRepository.delete(entity);
+		return entity;
 	}
 
 	@Override
 	public User update(User entity) {
-		// TODO Auto-generated method stub
 		return userRepository.save(entity);
 	}
 
-	/**
-	 * 
-	 * @param socialId
-	 * @return
-	 */
+
 	public User getBySocialId(String socialId) {
-		// return userRepository.findOneBySocialId(socialId);
-		return null;
+		return userRepository.findOneBySocialId(socialId);
 	}
 
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
 	public List<User> filterByName(String name) {
 		 return userRepository.findOneByNameContainingIgnoreCase(name);
 	}
 
-	/**
-	 * 
-	 * @param userId
-	 * @return
-	 */
 	public User removeById(Long userId) {
 
 		User user = this.getById(userId);
 		if (user == null)
 			throw new ObjectNotFoundException("There is no user with id %d");
 
-		BookOrder bookOrder = orderService.getByUserId(userId);// orders of user
+		BookOrder bookOrder = orderService.getByUserId(userId);
 
 		if (bookOrder != null)
-			orderService.remove(bookOrder); // remove orders and the user
+			orderService.remove(bookOrder);
 		else
-			this.remove(user); // remove user without orders
+			this.remove(user);
 
 		return user;
 	}
 
 	/**
-	 * 
-	 * 
+	 * REVIEWW
 	 * @param name
+	 * @param pageNumber
+	 * @param pageSize
 	 * @return
 	 */
-	public List<User> getByParam(String name, Pageable page) {
+	public List<User> getByParam(String name, String pageNumber, String pageSize) {
+		Pageable page = PageRequest.of(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+		
 		List<User> userList = null;
 		if (!name.isEmpty())
 			userList = this.filterByName(name);
 		else
-			userList = this.getAll(page);
+			userList = this.getAll(pageNumber, pageSize).getContent();
 		return userList;
 	}
 
 	/**
-	 * Create a user credential by user id
-	 * 
+	 * REVIEW
 	 * @param userId
 	 * @param credential
 	 * @return
@@ -138,7 +116,6 @@ public class UserService implements ICrudService<User, Long> {
 				return user;
 			}
 		}
-
 		return user;
 	}
 

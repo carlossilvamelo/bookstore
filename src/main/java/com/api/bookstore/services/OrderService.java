@@ -1,26 +1,21 @@
 package com.api.bookstore.services;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.api.bookstore.exceptions.ObjectNotFoundException;
 import com.api.bookstore.models.Book;
 import com.api.bookstore.models.BookOrder;
 import com.api.bookstore.models.User;
 import com.api.bookstore.repository.BookOrderRepository;
 import com.api.bookstore.repository.BookRepository;
+import com.api.bookstore.repository.UserRepository;
 
 @Service
 public class OrderService implements ICrudService<BookOrder, Long> {
@@ -29,19 +24,21 @@ public class OrderService implements ICrudService<BookOrder, Long> {
 	private BookOrderRepository orderRepository;
 
 	@Autowired
-	private UserService userService;
+	private UserRepository userRepository;
 
 	@Autowired
-	private BookService bookService;
+	private BookRepository bookRepository;
 
 	@Override
-	public List<BookOrder> getAll(Pageable page) {
-		return orderRepository.findAll();
+	public Page<BookOrder> getAll(String pageNumber, String pageSize) {
+		Pageable page = PageRequest.of(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+		return orderRepository.findAll(page);
 	}
 
 	@Override
 	public BookOrder getById(Long id) {
-		return orderRepository.findById(id).get();
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException(String.format("There is no order with id = %d", id)));
 	}
 
 	@Override
@@ -50,83 +47,64 @@ public class OrderService implements ICrudService<BookOrder, Long> {
 	}
 
 	@Override
-	public void remove(BookOrder entity) {
+	public BookOrder remove(BookOrder entity) {
 		orderRepository.delete(entity);
+		return entity;
 	}
 
 	@Override
 	public BookOrder update(BookOrder entity) {
+
 		return orderRepository.save(entity);
 	}
 
-	/**
-	 * 
-	 * @param userId
-	 * @return
-	 */
 	public BookOrder getByUserId(Long userId) {
-		//User user = userService.getById(userId);
-
-		return orderRepository.findOrderByUserId(userId);
+		return Optional.ofNullable(orderRepository.findOrderByUserId(userId)).orElseThrow(
+				() -> new ObjectNotFoundException(String.format("There is no Order for user with id = %d", userId)));
 	}
 
-
-	
 	/**
+	 * Create a new order
 	 * 
-	 * @param userId
-	 * @param bookId
+	 * @param userId  - order to the user
+	 * @param bookIds - books ordered
 	 * @return
 	 */
-	public BookOrder orderBook(Long userId, List<Long> bookIds) {
-		
+	public BookOrder createNewOrderToUser(Long userId, List<Long> bookIds) {
+
 		LocalDate currentDate = LocalDate.now();
-		LocalDate dueDate = LocalDate.of(currentDate.getYear(), currentDate.getMonthValue()+1
-				, currentDate.getDayOfMonth());
-		User user = userService.getById(userId);// verify the user
-		if (user == null)
-			throw new ObjectNotFoundException(String.format("There is no user with id = %d", userId));
+		LocalDate dueDate = currentDate.plusMonths(1);
 
-		BookOrder order = new BookOrder(user, currentDate, dueDate, null);// new order
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ObjectNotFoundException(String.format("There is no user with id = %d", userId)));
+
+		BookOrder order = new BookOrder(user, currentDate, dueDate, null);
 		order = orderRepository.save(order);
-		
-		for(Long bookId : bookIds){
-			
-			Book book = bookService.getById(bookId);// verify the book
-			if (book == null)
-				throw new ObjectNotFoundException(String.format("There is no book with id = %d", bookId));	
 
+		for (Long bookId : bookIds) {
+
+			Book book = bookRepository.findById(bookId).orElseThrow(
+					() -> new ObjectNotFoundException(String.format("There is no book with id = %d", bookId)));
 
 			if (book.isFree()) {
 				book.setOrder(order);
 				book.setFree(false);
-				bookService.create(book);
+				bookRepository.save(book);
 			} else
 				throw new ObjectNotFoundException(String.format("The book with id %d is not free", book.getId()));
-			
-		};
+
+		}
 
 		return order;
 	}
 
-	/**
-	 * 
-	 * @param orderId
-	 * @return
-	 */
 	public BookOrder devolution(Long orderId) {
-		BookOrder order = this.getById(orderId);
 
-		
-		if (order == null)
-			throw new ObjectNotFoundException(String.format("Order with id %d not exists", orderId));
-		
+		BookOrder order = this.getById(orderId);
 		List<Book> bookList = order.getBook();
-		bookService.updateAll(bookList);
+		bookRepository.saveAll(bookList);
 		this.remove(order);
+
 		return order;
 	}
-
-
-
 }

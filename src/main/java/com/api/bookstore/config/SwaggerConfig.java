@@ -18,28 +18,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public Docket produceApi(){
-    return new Docket(DocumentationType.SWAGGER_2)
-    .apiInfo(apiInfo())
-    .select()
-    .apis(RequestHandlerSelectors.basePackage("com.api.bookstore.controllers"))
-    .paths(paths())
-    .build();
-}
-// Describe your apis
-private ApiInfo apiInfo() {
-    return new ApiInfoBuilder()
-    .title("BookStore API")
-    .description("BookStore API")
-    .version("1.0-SNAPSHOT")
-    .build();
-}
-// Only select apis that matches the given Predicates.
-private Predicate<String> paths() {
-// Match all paths except /error
-    return Predicates.and(
-    PathSelectors.regex("/.*"),
-    Predicates.not(PathSelectors.regex("/error.*")));
-    }
+	@Bean
+	public Docket produceApi() {
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
+				.apis(RequestHandlerSelectors.basePackage("com.api.bookstore.controllers")).paths(paths()).build();
+	}
+
+	private ApiInfo apiInfo() {
+		return new ApiInfoBuilder().title("BookStore API").description("BookStore API").version("1.0-SNAPSHOT").build();
+	}
+
+
+	private Predicate<String> paths() {
+
+		return Predicates.and(PathSelectors.regex("/.*"), Predicates.not(PathSelectors.regex("/error.*")));
+	}
 }

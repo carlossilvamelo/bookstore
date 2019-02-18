@@ -6,7 +6,7 @@ public class StandardError implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long timestamp;
+	private String timestamp;
 	private Integer status;
 	private String error;
 	private String message;
@@ -18,7 +18,7 @@ public class StandardError implements Serializable{
 	}
 	 
 	
-	public StandardError(Long timestamp, Integer status, String error, String message, String path) {
+	public StandardError(String timestamp, Integer status, String error, String message, String path) {
 		super();
 		this.timestamp = timestamp;
 		this.status = status;
@@ -26,10 +26,10 @@ public class StandardError implements Serializable{
 		this.message = message;
 		this.path = path;
 	}
-	public Long getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(Long timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 	public Integer getStatus() {

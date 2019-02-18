@@ -16,18 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.api.bookstore.dto.LoginDto;
-import com.api.bookstore.dto.UserDto;
 import com.api.bookstore.models.Credential;
 import com.api.bookstore.models.User;
 import com.api.bookstore.services.UserService;
-
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Api(value = "LibraryAPI", description = "Library API")
 public class UserResource {
 
@@ -35,23 +30,22 @@ public class UserResource {
 	private UserService userService;
 
 
-	@PostMapping("")
+	@PostMapping
 	public User create(@Valid @RequestBody User user) {
 		return userService.create(user);
 	}
 
-	@PostMapping("{userId}")
+	@PostMapping("/{userId}")
 	public User signup(@PathVariable Long userId, @Valid @RequestBody Credential credential) {
 		return userService.signup(userId, credential);
 	}
 
-	@GetMapping("")
+	@GetMapping
 	public List<User> getAll(@RequestParam(defaultValue = "") String name,
-			@RequestParam(defaultValue = "0") String page
-			, @RequestParam(defaultValue = "10") String size) {
-		Pageable pageRequest = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+			@RequestParam(defaultValue = "0") String pageNumber
+			, @RequestParam(defaultValue = "10") String pageSize) {
 		
-		return userService.getByParam(name, pageRequest);
+		return userService.getByParam(name, pageNumber, pageSize);
 	}
 
 	@GetMapping("/{id}")
@@ -60,7 +54,7 @@ public class UserResource {
 		return userService.getById(id);
 	}
 
-	@DeleteMapping("{userId}")
+	@DeleteMapping("/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public User delete(@PathVariable Long userId) {
 		return userService.removeById(userId);

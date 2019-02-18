@@ -5,8 +5,9 @@ import java.io.Serializable;
 import com.api.bookstore.models.User;
 
 public class UserDto implements Serializable{
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 2292351380455928825L;
+	
 	private Long id;
 	private String name;
 	private String socialId;

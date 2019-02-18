@@ -1,6 +1,11 @@
 package com.api.bookstore.dto;
 
-public class AccountCredentials {
+import java.io.Serializable;
+
+public class AccountCredentialsDto implements Serializable{
+
+	private static final long serialVersionUID = 6064557375339358984L;
+	
 	private String username;
 	private String password;
 	
