@@ -5,12 +5,10 @@ swagger URI: "/swagger-ui.html"
 ## features done
 
 ### Authentication
-- generate token by user name
-- token verification
+- basic auth
 
 ### User
 
-- login
 - signup
 - list all (filter by name)
 - create
