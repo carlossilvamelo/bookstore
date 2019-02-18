@@ -13,12 +13,14 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.api.bookstore.controllers.UserResource;
 import com.api.bookstore.services.JwtManager;
 
 //@Component
+@Order(1)
 public class RequestFilter implements Filter {
 
 	static final Logger LOG = Logger.getLogger(UserResource.class.getName());

@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.api.bookstore.enums.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="BOOK")
@@ -31,7 +34,7 @@ public class Book{
 	@Column(name="free")
 	private boolean free;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="order_id")
 	private BookOrder bookOrder;
 	
@@ -82,6 +85,7 @@ public class Book{
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 
 	public BookOrder getOrder() {
 		return bookOrder;

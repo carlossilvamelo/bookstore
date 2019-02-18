@@ -1,7 +1,7 @@
 package com.api.bookstore.models;
 
 
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,11 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="BOOK_ORDER")
@@ -26,18 +29,21 @@ public class BookOrder{
     private Long id;
 	
 	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name="user_fk")
 	private User user;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar  orderDate;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar dueDate;
+
+	@Column(name="order_date")
+	private LocalDate  orderDate;
+	@Column(name="due_date")
+	private LocalDate dueDate;
 	
-	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.MERGE)
+	@JsonIgnore
 	private List<Book> book;
 	
 	
-	public BookOrder(User user, Calendar orderDate, Calendar dueDate, List<Book> book) {
+	public BookOrder(User user, LocalDate orderDate, LocalDate dueDate, List<Book> book) {
 		super();
 		this.user = user;
 		this.orderDate = orderDate;
@@ -80,19 +86,19 @@ public class BookOrder{
 
 
 
-	public Calendar getOrderDate() {
+	public LocalDate getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(Calendar orderDate) {
+	public void setOrderDate(LocalDate orderDate) {
 		this.orderDate = orderDate;
 	}
 
-	public Calendar getDueDate() {
+	public LocalDate getDueDate() {
 		return dueDate;
 	}
 
-	public void setDueDate(Calendar dueDate) {
+	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
 	}
 	

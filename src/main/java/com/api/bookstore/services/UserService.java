@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,24 +27,20 @@ public class UserService implements ICrudService<User, Long> {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Override
-	public List<User> getAll() { 
-		
+	public List<User> getAll(Pageable page) {
 		return userRepository.findAll(PageRequest.of(0, 2)).getContent();
 	}
 
-
 	@Override
 	public User getById(Long id) {
-		User user = userRepository.findById(id).get();
-		if (user != null)
-			return user;
-		else
-			throw new ObjectNotFoundException(String.format("There is no user with  id=%d", id));
+
+		return userRepository.findById(id)
+				.orElseThrow(()->new ObjectNotFoundException(String.format("There is no user with  id=%d", id)));
 	}
 
 	@Override
@@ -62,15 +59,14 @@ public class UserService implements ICrudService<User, Long> {
 		return userRepository.save(entity);
 	}
 
-
-
 	/**
 	 * 
 	 * @param socialId
 	 * @return
 	 */
 	public User getBySocialId(String socialId) {
-		return userRepository.findOneBySocialId(socialId);
+		// return userRepository.findOneBySocialId(socialId);
+		return null;
 	}
 
 	/**
@@ -79,7 +75,7 @@ public class UserService implements ICrudService<User, Long> {
 	 * @return
 	 */
 	public List<User> filterByName(String name) {
-		return userRepository.findOneByNameContainingIgnoreCase(name);
+		 return userRepository.findOneByNameContainingIgnoreCase(name);
 	}
 
 	/**
@@ -89,17 +85,17 @@ public class UserService implements ICrudService<User, Long> {
 	 */
 	public User removeById(Long userId) {
 
-		User user = this.getById(userId); 
-		if(user == null)
+		User user = this.getById(userId);
+		if (user == null)
 			throw new ObjectNotFoundException("There is no user with id %d");
-		
+
 		BookOrder bookOrder = orderService.getByUserId(userId);// orders of user
-		
-		if(bookOrder != null)
+
+		if (bookOrder != null)
 			orderService.remove(bookOrder); // remove orders and the user
 		else
 			this.remove(user); // remove user without orders
-		
+
 		return user;
 	}
 
@@ -109,12 +105,12 @@ public class UserService implements ICrudService<User, Long> {
 	 * @param name
 	 * @return
 	 */
-	public List<User> getByParam(String name) {
+	public List<User> getByParam(String name, Pageable page) {
 		List<User> userList = null;
 		if (!name.isEmpty())
 			userList = this.filterByName(name);
 		else
-			userList = this.getAll();
+			userList = this.getAll(page);
 		return userList;
 	}
 
@@ -160,10 +156,6 @@ public class UserService implements ICrudService<User, Long> {
 				,"issue", JwtManager.TOKEN_SUBJECT,JwtManager.TIMEOUT));
 		
 		return userDto;
-
 	}
-	
-
-	
 
 }

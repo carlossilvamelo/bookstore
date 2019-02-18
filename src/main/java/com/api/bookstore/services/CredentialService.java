@@ -3,6 +3,7 @@ package com.api.bookstore.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.api.bookstore.exceptions.ObjectNotFoundException;
@@ -18,7 +19,7 @@ public class CredentialService implements ICrudService<Credential, Long>{
 	
 
 	@Override
-	public List<Credential> getAll() {
+	public List<Credential> getAll(Pageable page) {
 		// TODO Auto-generated method stub
 		return credentialRepository.findAll();
 	}
@@ -26,7 +27,8 @@ public class CredentialService implements ICrudService<Credential, Long>{
 	@Override
 	public Credential getById(Long id) {
 		// TODO Auto-generated method stub
-		return credentialRepository.findById(id).get();
+		return credentialRepository.findById(id)
+				.orElseThrow(()-> new ObjectNotFoundException(String.format("There is no credential with  id=%d", id)));
 	}
 
 	@Override

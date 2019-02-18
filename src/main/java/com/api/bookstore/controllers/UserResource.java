@@ -5,8 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.api.bookstore.dto.LoginDto;
 import com.api.bookstore.dto.UserDto;
 import com.api.bookstore.models.Credential;
 import com.api.bookstore.models.User;
-import com.api.bookstore.repository.UserRepository;
 import com.api.bookstore.services.UserService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -50,8 +51,12 @@ public class UserResource {
 	}
 
 	@GetMapping("")
-	public List<User> getAll(@RequestParam(defaultValue = "") String name) {
-		return userService.getByParam(name);
+	public List<User> getAll(@RequestParam(defaultValue = "") String name,
+			@RequestParam(defaultValue = "0") String page
+			, @RequestParam(defaultValue = "10") String size) {
+		Pageable pageRequest = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+		
+		return userService.getByParam(name, pageRequest);
 	}
 
 	@GetMapping("/{id}")

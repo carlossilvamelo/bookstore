@@ -1,5 +1,6 @@
 package com.api.bookstore.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -29,9 +30,10 @@ public class BookResource {
 	@GetMapping("")
 	public List<Book> getAll(@RequestParam(defaultValue = "") String orderBy,
 			@RequestParam(defaultValue = "") String title, @RequestParam(defaultValue = "") String author,
-			@RequestParam(defaultValue = "") Long category) {
-		
-		return bookService.getAllByFilters(title, author, orderBy);
+			@RequestParam(defaultValue = "") Long category, @RequestParam(defaultValue = "0") String page,
+			@RequestParam(defaultValue = "10") String size) {
+
+		return bookService.getAllWithFilters(title, author, orderBy, page, size);
 	}
 
 	@GetMapping("/{id}")
