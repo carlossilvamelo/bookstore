@@ -63,24 +63,15 @@ public class OrderService implements ICrudService<BookOrder, Long> {
 				() -> new ObjectNotFoundException(String.format("There is no Order for user with id = %d", userId)));
 	}
 
-	/**
-	 * Create a new order
-	 * 
-	 * @param userId  - order to the user
-	 * @param bookIds - books ordered
-	 * @return
-	 */
 	public BookOrder createNewOrderToUser(Long userId, List<Long> bookIds) {
 
 		LocalDate currentDate = LocalDate.now();
 		LocalDate dueDate = currentDate.plusMonths(1);
-
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new ObjectNotFoundException(String.format("There is no user with id = %d", userId)));
 
 		BookOrder order = new BookOrder(user, currentDate, dueDate, null);
 		order = orderRepository.save(order);
-
 		for (Long bookId : bookIds) {
 
 			Book book = bookRepository.findById(bookId).orElseThrow(
@@ -98,10 +89,11 @@ public class OrderService implements ICrudService<BookOrder, Long> {
 		return order;
 	}
 
-	public BookOrder devolution(Long orderId) {
+	public BookOrder closeOrder(Long orderId) {
 
 		BookOrder order = this.getById(orderId);
 		List<Book> bookList = order.getBook();
+		bookList.forEach(b -> b.setOrder(null));
 		bookRepository.saveAll(bookList);
 		this.remove(order);
 

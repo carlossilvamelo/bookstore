@@ -2,6 +2,7 @@ package com.api.bookstore.services;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.api.bookstore.exceptions.BookOrderedException;
 import com.api.bookstore.exceptions.ObjectNotFoundException;
 import com.api.bookstore.models.Book;
 import com.api.bookstore.repository.BookRepository;
@@ -55,6 +57,18 @@ public class BookService implements ICrudService<Book, Long> {
 	public Book remove(Book entity) {
 		bookRepository.delete(entity);
 		return entity;
+	}
+
+	public Book removeById(Long bookId) {
+
+		Book book = bookRepository.findById(bookId)
+				.orElseThrow(() -> new ObjectNotFoundException(String.format("There is no book with id = %d", bookId)));
+
+		if (book.getOrder() != null)
+			throw new BookOrderedException(String.format("Book with id = %d is ordered, can not be deleted", bookId));
+
+		bookRepository.deleteById(bookId);
+		return book;
 	}
 
 	@Override

@@ -1,4 +1,5 @@
 package com.api.bookstore.services;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,13 +17,13 @@ public class AddressService implements ICrudService<Address, Long> {
 
 	@Override
 	public Page<Address> getAll(String pageNumber, String pageSize) {
-		Pageable page = PageRequest.of(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
-		return addressRepository.findAll(page);
+		Pageable pageRequest = PageRequest.of(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+		return addressRepository.findAll(pageRequest);
 	}
 
 	public Page<Address> getAllWithFilters(String pageParam, String sizeParam) {
-		Pageable page = PageRequest.of(Integer.parseInt(pageParam), Integer.parseInt(sizeParam));
-		return addressRepository.findAll(page);
+		Pageable pageRequest = PageRequest.of(Integer.parseInt(pageParam), Integer.parseInt(sizeParam));
+		return addressRepository.findAll(pageRequest);
 	}
 
 	@Override

@@ -15,4 +15,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 	@Query("SELECT b FROM Book b " + "WHERE UPPER(b.title) LIKE UPPER(CONCAT('%',:title,'%')) "
 			+ "AND UPPER(b.author) LIKE UPPER(CONCAT('%',:author,'%'))")
 	public List<Book> findWithFilter(@Param("title") String title, @Param("author") String author, Pageable page);
+
+	public void deleteById(Long id);
 }

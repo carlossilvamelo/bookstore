@@ -5,12 +5,10 @@ swagger URI: "/swagger-ui.html"
 ## features done
 
 ### Authentication
-- generate token by user name
-- token verification
+- basic auth
 
 ### User
 
-- login
 - signup
 - list all (filter by name)
 - create
@@ -19,14 +17,21 @@ swagger URI: "/swagger-ui.html"
 ### Book
 
 - create
-- get all (filter by author name, words in title, category
+- list all (filter by author name, words in title, category
 	(order by title and autor)
 - update
+- delete
 - find by id
 
+### Address
 
+- list all
+- find by id
 
 ### Order
 
+- list all
+- find by id
 - create new order
 - close order (devolution)
+- find order by user

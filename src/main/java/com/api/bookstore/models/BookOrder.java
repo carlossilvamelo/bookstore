@@ -1,6 +1,5 @@
 package com.api.bookstore.models;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -19,30 +18,27 @@ import javax.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="BOOK_ORDER")
-public class BookOrder{
-	
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="order_id")
-    private Long id;
-	
-	@OneToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name="user_fk")
-	private User user;
-	
+@Table(name = "BOOK_ORDER")
+public class BookOrder {
 
-	@Column(name="order_date")
-	private LocalDate  orderDate;
-	@Column(name="due_date")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
+	private Long id;
+
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "user_fk")
+	private User user;
+
+	@Column(name = "order_date")
+	private LocalDate orderDate;
+	@Column(name = "due_date")
 	private LocalDate dueDate;
-	
-	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.MERGE)
+
+	@OneToMany(mappedBy = "bookOrder", cascade = CascadeType.REFRESH)
 	@JsonIgnore
 	private List<Book> book;
-	
-	
+
 	public BookOrder(User user, LocalDate orderDate, LocalDate dueDate, List<Book> book) {
 		super();
 		this.user = user;
@@ -51,9 +47,9 @@ public class BookOrder{
 		this.book = book;
 	}
 
-	public BookOrder() {}
-	
-	
+	public BookOrder() {
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -66,25 +62,17 @@ public class BookOrder{
 		return user;
 	}
 
-
-
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-
 
 	public List<Book> getBook() {
 		return book;
 	}
 
-
-
 	public void setBook(List<Book> book) {
 		this.book = book;
 	}
-
-
 
 	public LocalDate getOrderDate() {
 		return orderDate;
@@ -101,7 +89,5 @@ public class BookOrder{
 	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
 	}
-	
-	
 
 }

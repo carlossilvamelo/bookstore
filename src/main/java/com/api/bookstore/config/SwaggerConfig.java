@@ -28,7 +28,6 @@ public class SwaggerConfig {
 		return new ApiInfoBuilder().title("BookStore API").description("BookStore API").version("1.0-SNAPSHOT").build();
 	}
 
-
 	private Predicate<String> paths() {
 
 		return Predicates.and(PathSelectors.regex("/.*"), Predicates.not(PathSelectors.regex("/error.*")));

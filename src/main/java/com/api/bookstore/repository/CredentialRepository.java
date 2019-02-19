@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.api.bookstore.models.Credential;
 
 @Repository
-public interface CredentialRepository extends JpaRepository<Credential, Long>{
-	
+public interface CredentialRepository extends JpaRepository<Credential, Long> {
+
 	public Credential findByUserName(String userName);
 }

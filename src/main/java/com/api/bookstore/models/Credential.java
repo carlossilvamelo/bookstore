@@ -8,61 +8,56 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="CREDENTIAL")
+@Table(name = "CREDENTIAL")
 public class Credential {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="credential_id")
-    private Long id;
-    
-    @Column(name="password")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "credential_id")
+	private Long id;
+
+	@Column(name = "password")
 	private String password;
 
-    @Column(name = "user_name")
-    private String userName;
-    
-    @Column(name = "is_admin")
-    private Boolean isAdmin;
+	@Column(name = "user_name")
+	private String userName;
 
+	@Column(name = "is_admin")
+	private Boolean isAdmin;
 
-    public Credential() {
-    }
+	public Credential() {
+	}
 
-    
-    
-    public Credential(String password, String userName, boolean isAdmin) {
+	public Credential(String password, String userName, boolean isAdmin) {
 		super();
 		this.password = password;
 		this.userName = userName;
 		this.isAdmin = isAdmin;
 	}
 
-
-
 	public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public Boolean isAdmin() {
 		return isAdmin;
@@ -71,5 +66,4 @@ public class Credential {
 	public void setAdmin(Boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-
 }
