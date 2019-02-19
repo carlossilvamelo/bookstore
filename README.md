@@ -33,5 +33,7 @@ swagger URI: "/swagger-ui.html"
 - list all
 - find by id
 - create new order
+- delete order
 - close order (devolution)
 - find order by user
+
