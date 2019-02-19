@@ -73,9 +73,6 @@ public class UserService implements ICrudService<User, Long> {
 	}
 
 	public User signup(UserDto userDto) {
-		if (userDto.getPassword() == null || userDto.getUserName() == null || userDto.getPassword().isEmpty()
-				|| userDto.getUserName().isEmpty())
-			throw new SignupRequestException("Invalid Password or User Name. Can't set empty or null values");
 		return userRepository.save(userDto.toUser());
 	}
 

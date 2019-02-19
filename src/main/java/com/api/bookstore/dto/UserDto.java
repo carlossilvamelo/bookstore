@@ -2,6 +2,9 @@ package com.api.bookstore.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.api.bookstore.models.Credential;
 import com.api.bookstore.models.User;
@@ -12,9 +15,13 @@ public class UserDto implements Serializable {
 
 	private Long id;
 	private String name;
+	@NotEmpty(message = "can't set a empty social id")
 	private String socialId;
+	@Email(message = "email not valid")
 	private String email;
+	@NotEmpty(message = "can't set a empty user name")
 	private String userName;
+	@NotEmpty(message = "can't set a empty password")
 	private String password;
 	private boolean isAdmin;
 
